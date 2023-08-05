@@ -1,0 +1,172 @@
+<html>
+
+<head>
+    <style>
+        #output {
+            background-color: black;
+            color: white;
+            -webkit-app-region: drag;
+        }
+
+        #exit {
+            -webkit-app-region: drag;
+        }
+
+        .BT {
+            display: block;
+            font-size: 0;
+        }
+
+        .FX {
+            display: block;
+            font-size: 0;
+        }
+
+        .FX img {
+            padding: 0 50px;
+        }
+
+        .TSUMAMI{
+            width: 400px;
+            display:flex;
+            justify-content: space-between;
+            font-size: 0;
+        }
+
+        .relative {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .absolute {
+            position: absolute;
+        }
+
+        #tsumamiL2 {
+            transform: rotate(180deg);
+        }
+
+        #tsumamiR2 {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="TSUMAMI">
+        <div class="relative">
+            <img class="absolute" id="tsumamiL1" width="100" height="100" alt="">
+            <img class="absolute" id="tsumamiL2" width="100" height="100" alt="">
+        </div>
+        <div class="relative">
+            <img class="absolute" id="tsumamiR1" width="100" height="100" alt="">
+            <img class="absolute" id="tsumamiR2" width="100" height="100" alt="">
+        </div>
+    </div>
+    <div class="BT">
+        <img id="buttonA" width="100" height="100" alt="">
+        <img id="buttonB" width="100" height="100" alt="">
+        <img id="buttonC" width="100" height="100" alt="">
+        <img id="buttonD" width="100" height="100" alt="">
+    </div>
+    <div class="FX">
+        <img id="buttonL" width="100" height="50" alt="">
+        <img id="buttonR" width="100" height="50" alt="">
+    </div>
+    <br>
+    <a id="output"></a>
+    <button id="exit">x</button>
+
+</body>
+
+<script type="text/javascript">
+    var imgArray = new Array();
+    // Electronに表示するimgを絶対パスで指定（相対パスだと動かない）
+    var dirname = "C:/Users/taich/Desktop/Electron"
+    var tsumamiFalseTexture = 'file:///'+ dirname +'/img/tsumami_false.png';
+    var tsumamiLTrueTexture = 'file:///' + dirname +'/img/tsumami_L_true.png';
+    var tsumamiRTrueTexture = 'file:///' + dirname +'/img/tsumami_R_true.png';
+    var btFalseTexture = 'file:///' + dirname +'/img/white_false.png';
+    var btTrueTexture = 'file:///' + dirname +'/img/white_true.png';
+    var fxFalseTexture = 'file:///' + dirname +'/img/fx_false.png';
+    var fxTrueTexture = 'file:///' + dirname +'/img/fx_true.png';
+
+    let keys_push = [false, false, false, false, false, false, false, false, false, false];
+    let keycodes = ["d", "f", "j", "k", "c", "m", "e", "r", "o", "i"];
+
+    let BT_A = document.getElementById('buttonA');
+    let BT_B = document.getElementById('buttonB');
+    let BT_C = document.getElementById('buttonC');
+    let BT_D = document.getElementById('buttonD');
+    let FX_L = document.getElementById('buttonL');
+    let FX_R = document.getElementById('buttonR');
+    let VOL_L1 = document.getElementById('tsumamiL1');
+    let VOL_L2 = document.getElementById('tsumamiL2');
+    let VOL_R1 = document.getElementById('tsumamiR1');
+    let VOL_R2 = document.getElementById('tsumamiR2');
+    BT_A.src = btFalseTexture;
+    BT_B.src = btFalseTexture;
+    BT_C.src = btFalseTexture;
+    BT_D.src = btFalseTexture;
+    FX_L.src = fxFalseTexture;
+    FX_R.src = fxFalseTexture;
+    VOL_L1.src = tsumamiFalseTexture;
+    VOL_L2.src = tsumamiFalseTexture;
+    VOL_R1.src = tsumamiFalseTexture;
+    VOL_R2.src = tsumamiFalseTexture;
+    let buttons = [BT_A, BT_B, BT_C, BT_D, FX_L, FX_R, VOL_L1, VOL_L2, VOL_R1, VOL_R2];
+    document.addEventListener('keypress', keypress_ivent);
+    document.addEventListener('keyup', keyup_ivent);
+    document.getElementById('output').innerHTML = keys_push;
+
+
+    function buttonClick() {
+        console.log("test");
+    }
+
+    function keypress_ivent(e) {
+        for (let i = 0; i < 10; i++) {
+            if (e.key == keycodes[i]) {
+                keys_push[i] = true;
+            }
+        }
+        document.getElementById('output').innerHTML = keys_push;
+        imgUpdate();
+        return false;
+    }
+
+    function keyup_ivent(e) {
+        for (let i = 0; i < 10; i++) {
+            if (e.key == keycodes[i]) {
+                keys_push[i] = false;
+            }
+        }
+        document.getElementById('output').innerHTML = keys_push;
+        imgUpdate();
+        return false;
+    }
+
+    function imgUpdate() {
+        for (let i = 0; i < 10; i++) {
+            if (i < 4) {
+                if (keys_push[i]) buttons[i].src = btTrueTexture;
+                else buttons[i].src = btFalseTexture;
+            }
+            else if (i < 6) {
+                if (keys_push[i]) buttons[i].src = fxTrueTexture;
+                else buttons[i].src = fxFalseTexture;
+            }
+            else if (i < 8) {
+                if (keys_push[i]) buttons[i].src = tsumamiLTrueTexture;
+                else buttons[i].src = tsumamiFalseTexture;
+            }
+            else if (i < 10) {
+                if (keys_push[i]) buttons[i].src = tsumamiRTrueTexture;
+                else buttons[i].src = tsumamiFalseTexture;
+            }
+        }
+    }
+</script>
+
+</html>
